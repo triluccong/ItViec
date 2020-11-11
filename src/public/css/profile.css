@@ -1,0 +1,36 @@
+main{
+    background-color: #E9E9E9;
+    height: 100%;
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+.main{
+    background-color: white;
+    margin: auto;
+    border-color: 1px solid black;
+    
+}
+.candidate{
+    padding: 30px 50px;
+}
+.candidate__group{
+    display: flex;
+    align-items: center;
+}
+.candidate__group img{
+    width: 200px;
+}
+
+.form-group img {
+    width: 70%;
+}
+
+.company{
+    padding: 30px 40px;
+}
+select.form-control[multiple], select.form-control[size] {
+    height: 250px;
+}
+label{
+    font-size: large;
+}

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Profile | UR Job</title>
+        <link rel="icon" href="/img/logo.png" />
+        <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://widget.cloudinary.com/v2.0/global/all.js" type="text/javascript"></script>  
+        <link rel="stylesheet" href="/fonts/icon/css/all.css">
+        <link rel="stylesheet" href="/css/base.css" />
+        <link rel="stylesheet" href="/css/profile.css" />
+    </head>
+    <body>
+        <div class="app">
+            <header>
+                <div class="header width_box">
+                    <div class="header__top">
+                        <div class="logo">
+                            <a href="/">
+                                <img src="/img/logo.png" alt="" class="logo__img" />
+                            </a>
+                        </div>
+                        <nav class="navbar navbar-expand-lg">
+                            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                                data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
+                            </button>
+    
+                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                <ul class="navbar-nav mr-auto">
+                                    <li class="nav-item menu--active ">
+                                        <a class="nav-link menu__item" href="/">Home
+                                            <span class="sr-only">(current)</span></a>
+                                    </li>
+                                    
+                                    <li class="nav-item">
+                                        <a class="nav-link menu__item" href="/job-list/all">Việc làm IT</a>
+                                    </li>
+                                    
+                                    <% if(!user){ %>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu__item" href="/login">Đăng Nhập</a>
+                                        </li>
+                                    <% }else {%>  
+                                        <li class="nav-item dropdown ">
+                                            <a class="nav-link dropdown-toggle menu__item" href="#" id="navbarDropdown"
+                                                role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Tài Khoản
+                                            </a>
+                                            <div class="dropdown-menu account" aria-labelledby="navbarDropdown">
+                                                <a class="dropdown-item" href="/profile"><i class="fas fa-user-circle"></i> Chỉnh sửa thông tin</a>
+                                                <% if(user.role === 2) {%>
+                                                    <a class="dropdown-item" href="/apply-candidate"><i class="fas fa-user-check"></i> Ứng viên</a>
+                                                    <a class="dropdown-item" href="/my-job"><i class="fas fa-briefcase"></i> Việc làm của tôi</a>
+                                                <% }else{ %> 
+                                                    <a class="dropdown-item" href="/apply-job"><i class="fas fa-briefcase"></i> Việc làm của tôi</a>
+                                                <% } %> 
+                                                <div class="dropdown-divider"></div>
+                                                <a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                                            </div>
+                                        </li>
+                                    <% } %> 
+                                    
+                                </ul>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <main>
+                <div class="width_box">
+                    <div class="main">
+                        <% if(user.role === 1){ %> 
+                            <div class="candidate container">
+                                <form action="/profile/candidate" class="candidate__form" method="post" enctype="multipart/form-data">
+                                    
+                                    <h2>Chào mừng, <%=candidate.name %> </h2>
+                                    <div class="form-group">
+                                        <p>Email : <%=candidate.email %></p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cv">CV : </label>
+                                        <a href="<%= candidate.cv.replace('/upload', '/upload/f_auto,fl_attachment') %> " target="_blank">CV của bạn</a>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cv">Thay đổi CV : </label>
+                                        <input type="file" name="cv" id="cv">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name">Tên : </label>
+                                        <input type="text" value="<%=candidate.name %>"  name="name" class=" form-control-lg form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="gender">Giới tính : </label>
+                                        <select class="form-control form-control-lg" value=<%=candidate.gender %> name ="gender">
+                                            <option value="1" >Nam</option>
+                                            <option value="-1">Nữ</option>
+                                            <option value="0">Khác</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="dob">Ngày sinh : </label>
+                                        <input class="form-control form-control-lg" name="dob" type="date" value=<%= candidate.birthDay ? candidate.birthDay.toISOString().substring(0, 10) : '' %> >
+                                    </div>
+                                    
+                                    
+                                    <div class="form-group">
+                                        <button class="btn btn-primary btn-lg" type="submit">Lưu lại</button>
+                                    </div>
+                                </form>
+                            </div>
+                        <% } else{%> 
+                            <div class="company">
+                                <form action="/profile/company" class="company__from" method="post" enctype="multipart/form-data">
+
+                                    <div class="form-group">
+                                        <label for="name">Tên công ty</label>
+                                        <h1 class='company__name'><%= companyData.company_name %> </h1>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <h2>Ảnh bìa</h2>
+                                            <img src="<%= companyData.cover_image  %>" alt="" >
+                                            <input type="file" name="companyCover" id="companyCover">
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <h2>Ảnh Logo</h2>
+                                            <img src="<%= companyData.company_avatar %>" alt="">
+                                            <input type="file" name="companyLogo" id="companyLogo">
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                    <div class="row">
+                                        <div class="form-group col-8">
+                                            <label for="address">Địa chỉ</label>
+                                            <input type="text" name="address" id="address" class="form-control" value="<%= companyData.firstAddress %> ">
+                                        </div>
+                                        <div class="form-group col-4">
+                                            <label for="city">Tỉnh</label>
+                                            <select name="city" id="city"  class="form-control">
+                                                <% provinceData.forEach(e => { %>
+                                                    <option value="<%= e.province_id %>" <%= e.province_id == companyData.province_id ? 'selected' : '' %> > <%= e.province_name %> </option>
+                                                <% }) %>  
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="tech">Các công nghệ đặc trưng (Nhất Ctrl để chọn nhiều)</label>
+                                        <select name="tech" id="tech" multiple class="form-control techCompany" >
+                                           <%  techsData.forEach(tech => { %> 
+                                                <option <%= techData.findIndex(e => e.technology_id === tech.technology_id) != -1 ? 'selected' : ''  %>  value="<%= tech.technology_id %>"><%= tech.technology_name %> </option>
+                                            <% }) %> 
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="description">Mô tả về công ty</label>
+                                        <textarea class="form-control" name="description" id="description" cols="30" rows="10"><%= companyData.description %> </textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reason">Những lý do nên gia nhập công ty</label>
+                                        <textarea class="form-control" name="reason" id="reason" cols="30" rows="10"><%= companyData.reason %> </textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="treatment">Đãi ngộ</label>
+                                        <textarea class="form-control" name="treatment" id="treatment" cols="30" rows="10"><%= companyData.treatment %> </textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-lg btn-primary"><i class="fas fa-check"></i> Lưu lại</button>
+                                </form>
+                            </div>
+                        <% } %> 
+                        
+                    </div>
+                </div>
+            </main>
+            <footer>
+                <div class="footer__top">
+                    <div class="footer__top__main width_box">
+                        <div class="footer__top__group">
+                            <h5 class="footer__top__group__content">
+                                Việc làm IT theo Kỹ năng
+                            </h5>
+                            <a href="/job-list/all/Java" class="footer__top__group__link">Java</a>
+                            <a href="/job-list/all/JavaScript" class="footer__top__group__link">JavaScript</a>
+                            <a href="/job-list/all/PHP" class="footer__top__group__link">PHP</a>
+                            <a href="/job-list/all/C" class="footer__top__group__link">C</a>
+                            <a href="/job-list/all/Android" class="footer__top__group__link">Android</a>
+                            <a href="/job-list/all" class="footer__top__group__link">Xem tất cả</a>
+                        </div>
+                        <div class="footer__top__group">
+                            <h5 class="footer__top__group__content">
+                                Việc làm IT theo Cấp bậc
+                            </h5>
+                            <a href="/job-list/all/Tester" class="footer__top__group__link">Tester</a>
+                            <a href="/job-list/all/Senior" class="footer__top__group__link">Senior</a>
+                            <a href="/job-list/all/Junior" class="footer__top__group__link">Junior</a>
+                            <a href="/job-list/all/Fresher" class="footer__top__group__link">Fresher</a>
+                            <a href="/job-list/all/Internship" class="footer__top__group__link">Internship</a>
+                            <a href="/job-list/all" class="footer__top__group__link">Xem tất cả</a>
+                        </div>
+                        
+                        <div class="footer__top__group">
+                            <h5 class="footer__top__group__content">
+                                Việc làm IT theo Thành phố
+                            </h5>
+                            <a href="/job-list/ha-noi" class="footer__top__group__link">Hà Nội</a>
+                            <a href="/job-list/tp-hcm" class="footer__top__group__link">Hồ Chí Minh</a>
+                            <a href="/job-list/da-nang" class="footer__top__group__link">Đà Nẵng</a>
+                            <a href="/job-list/all" class="footer__top__group__link">Xem tất cả</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer__bot">
+                    <div class="footer__bot__main width_box">
+                        <div class="footer__bot__group">
+                            <a href="/" class="footer__bot__item">Trang chủ</a>
+                            <a href="/job-list/all" class="footer__bot__item">Việc làm IT</a>
+                            <a href="#" class="footer__bot__item">Liên hệ</a>
+                        </div>
+                        <div class="footer__bot__group">
+                            <a href="#" class="footer__bot__item">Quy định bảo mật</a>
+                            <a href="#" class="footer__bot__item">Thỏa thuận sử dụng</a>
+                            <a href="#" class="footer__bot__item">Chính sách giải quyết khiếu nại</a>
+                            <a href="#" class="footer__bot__item">Quy chế hoạt động</a>
+                            <a href="#" class="footer__bot__item">Câu hỏi thường gặp</a>
+                        </div>
+                        <div class="footer__bot__group">
+                            <p href="#" class="footer__bot__item">
+                                Copy © URJob
+                            </p>
+                            <p href="#" class="footer__bot__item">
+                                Điện thoại: 0123456789
+                            </p>
+                            <p href="#" class="footer__bot__item">
+                                Email: ntJob@gmail.com
+                            </p>
+                            <p href="#" class="footer__bot__item">
+                                Địa chỉ: G2, 144-Xuân Thủy, Cầu Giấy, Hà Nội
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- Bootstrap -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="/js/profile.js"></script>
+    </body>
+</html>
